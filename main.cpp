@@ -23,15 +23,12 @@
 namespace po = boost::program_options;
 namespace b = boost;
 
+int lambda_int = 0;
+double lambda = 0.0;
 cv::Mat src, src_gray;
 cv::Mat dst;
 cv::Size picture_size;
 
-int edgeThresh = 1;
-int lowThreshold;
-int const max_lowThreshold = 100;
-int ratio = 3; // 1:2 or 1:3
-int kernel_size = 3;
 const char* window_name = "Edge Map";
 
 std::vector<GRBModel>* models_ref = NULL;
@@ -47,22 +44,11 @@ void my_handler(int s) {
   }
 }
 
-void CannyThreshold(int, void*)
+void nop(int, void*)
 {
-    cv::Mat detected_edges;
-    /// Reduce noise with a kernel 3x3
-    //cv::blur( src_gray, detected_edges, cv::Size(3,3) );
-    cv::GaussianBlur( src_gray, detected_edges, cv::Size(3,3), 9.5);
-
-    /// Canny detector
-    cv::Canny( detected_edges, detected_edges, 0, lowThreshold*ratio, kernel_size );
-
-    /// Using Canny's output as a mask, we display our result
-    dst = cv::Scalar::all(0); // set all pixels of dst to greyscale color 0
-
-    src.copyTo( dst, detected_edges); // copy with detected_edges as mask
-    cv::imshow( window_name, dst );
+    lambda = (double) lambda_int/100.0;
 }
+
 
 int main(int argc, char** argv) {
     // set the handler
@@ -95,8 +81,6 @@ int main(int argc, char** argv) {
             std::cerr << "no input file given" << std::endl;
             return EXIT_FAILURE;
         }
-        if(vm.count("grid-size"))
-            std::cout << vm["grid-size"].as<int>() << std::endl;
     }
     catch (po::error &ex) {
         std::cerr << ex.what() << std::endl;
@@ -121,10 +105,7 @@ int main(int argc, char** argv) {
     cv::namedWindow( window_name, CV_WINDOW_AUTOSIZE );
 
     /// Create a Trackbar for user to enter threshold
-    cv::createTrackbar( "Low Threshold:", window_name, &lowThreshold, max_lowThreshold, CannyThreshold );
-
-    /// Show the image
-    CannyThreshold(0, 0);
+    cv::createTrackbar( "lambda:", window_name, &lambda_int, 100, nop );
         
     cv::waitKey(0);
 
@@ -157,7 +138,6 @@ int main(int argc, char** argv) {
     DPRINT(number_of_segments)
 
     
-    double lambda = 0.09;
     std::vector<Graph*> segment_graphs(number_of_segments);
     //GRBEnv env = GRBEnv();
     std::vector<GRBEnv> envs(number_of_segments); // we need an environment per model

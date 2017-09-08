@@ -1,0 +1,167 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<!--Converted with LaTeX2HTML 2008 (1.71)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>Specifying Multiple Objectives</TITLE>
+<META NAME="description" CONTENT="Specifying Multiple Objectives">
+<META NAME="keywords" CONTENT="refman">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META NAME="Generator" CONTENT="LaTeX2HTML v2008">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="refman.css">
+
+<LINK REL="next" HREF="working_with_multiple_obje.html">
+<LINK REL="previous" HREF="multiple_objectives.html">
+<LINK REL="up" HREF="multiple_objectives.html">
+<LINK REL="next" HREF="working_with_multiple_obje.html">
+</HEAD>
+
+<BODY >
+
+<DIV CLASS="navigation"><!--Navigation Panel-->
+<A NAME="tex2html14474"
+  HREF="working_with_multiple_obje.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html14472"
+  HREF="multiple_objectives.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html14466"
+  HREF="multiple_objectives.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html14475"
+  HREF="working_with_multiple_obje.html">Working With Multiple Objective</A>
+<B> Up:</B> <A NAME="tex2html14473"
+  HREF="multiple_objectives.html">Multiple Objectives</A>
+<B> Previous:</B> <A NAME="tex2html14467"
+  HREF="multiple_objectives.html">Multiple Objectives</A>
+<BR>
+<BR></DIV>
+<!--End of Navigation Panel-->
+
+<H2><A NAME="SECTION000231000000000000000">
+Specifying Multiple Objectives</A>
+</H2>
+
+<P>
+Let us first discuss the interface for managing multiple objectives.
+An empty model starts with one objective function, which is initially
+just 0.0.  We'll refer to this as the <SPAN  CLASS="textit">primary</SPAN> objective.  You
+can modify it in a few ways: you can set the
+<A HREF="obj.html#attr:Obj">Obj</A> attribute, or you can use the
+<code>setObjective</code> method from your language API (e.g.,
+<A HREF="py_model_setobjective.html#pythonmethod:Model.setObjective">Model.setObjective</A> in
+Python).
+Note that for a multi-objective model, all objective functions must be linear,
+including the primary objective.
+In general, attributes and methods that aren't specific to
+multi-objective optimization will work with the primary objective
+function.
+
+<P>
+If you'd like to input additional objectives, your first step is to
+tell Gurobi how many objectives you'd like to have in your model.  You
+do this by setting the <A HREF="numobj.html#attr:NumObj">NumObj</A> attribute on
+the Gurobi model.  Objectives are numbered <code>0</code> through
+<code>NumObj-1</code>. Once you've done this, you then modify or query
+objective <SPAN CLASS="MATH"><IMG
+ WIDTH="14" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img5.png"
+ ALT="$n$"></SPAN> in two steps.  The first is to set parameter
+<A HREF="objnumber.html#parameter:ObjNumber">ObjNumber</A> to the desired objective
+number; the second is to use the <A HREF="objn.html#attr:ObjN">ObjN</A>
+variable attribute to access the corresponding objective entry.  The
+primary objective is always objective <SPAN CLASS="MATH"><IMG
+ WIDTH="12" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img12.png"
+ ALT="$0$"></SPAN>, so
+<A HREF="objn.html#attr:ObjN">ObjN</A> and <A HREF="obj.html#attr:Obj">Obj</A> are
+equivalent when <A HREF="objnumber.html#parameter:ObjNumber">ObjNumber</A> is 0.
+Additional objectives are always linear.
+
+<P>
+To give an example, after you set <code>NumObj</code> to 3, then
+<code>ObjNumber</code> can be set to <SPAN CLASS="MATH"><IMG
+ WIDTH="12" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img12.png"
+ ALT="$0$"></SPAN>, <SPAN CLASS="MATH"><IMG
+ WIDTH="12" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img11.png"
+ ALT="$1$"></SPAN>, or <SPAN CLASS="MATH"><IMG
+ WIDTH="12" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img74.png"
+ ALT="$2$"></SPAN>.  This parameter
+setting will determine the effect of setting attribute <code>ObjN</code> on
+a variable.  Thus, for example, if you set <code>ObjN</code> to 5 for a variable
+<code>x</code> when <code>ObjNumber</code> is 2, then the objective coefficient in
+objective 2 for variable <code>x</code> will be set to 5.
+
+<P>
+You can also set an objective constant for each objective, using
+<A HREF="objncon.html#attr:ObjNCon">ObjNCon</A>.  Again,
+<A HREF="objncon.html#attr:ObjNCon">ObjNCon</A> and
+<A HREF="objcon.html#attr:ObjCon">ObjCon</A> are equivalent when
+<A HREF="objnumber.html#parameter:ObjNumber">ObjNumber</A> is <SPAN CLASS="MATH"><IMG
+ WIDTH="12" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img12.png"
+ ALT="$0$"></SPAN>.  You can also give
+each objective a name through <A HREF="objnname.html#attr:ObjNName">ObjNName</A>.
+
+<P>
+Note that a model has a single objective sense (controlled by the
+<A HREF="modelsense.html#attr:ModelSense">ModelSense</A> attribute).  This means
+that you can't maximize the first objective and minimize the second.
+However, you can achieve the same result with a simple trick.  Each
+objective has a weight, and these weights are allowed to be negative.
+Minimizing an objective function is equivalent to maximizing the
+negation of that function.
+
+<P>
+You can change the number of objectives in your model as many times as
+you like.  When you increase the objective count, the new objectives
+and their associated attributes are set to 0.  When you decrease the
+count, objectives beyond the new count are discarded. If you set the
+number of objectives to zero, the model becomes a pure feasibility
+problem.
+
+<P>
+We have extended the LP and MPS file formats, so writing a model with
+multiple objectives to a file will capture those objectives.
+Similarly, if you read a model file that contains multiple objectives,
+then <A HREF="numobj.html#attr:NumObj">NumObj</A> and
+<A HREF="objn.html#attr:ObjN">ObjN</A> will capture the objectives stored in
+the file.  See the <A HREF="model_file_formats.html#sec:FileFormats">file format</A> section
+for details.
+
+<P>
+
+<DIV CLASS="navigation"><HR>
+<!--Navigation Panel-->
+<A NAME="tex2html14474"
+  HREF="working_with_multiple_obje.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html14472"
+  HREF="multiple_objectives.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html14466"
+  HREF="multiple_objectives.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html14475"
+  HREF="working_with_multiple_obje.html">Working With Multiple Objective</A>
+<B> Up:</B> <A NAME="tex2html14473"
+  HREF="multiple_objectives.html">Multiple Objectives</A>
+<B> Previous:</B> <A NAME="tex2html14467"
+  HREF="multiple_objectives.html">Multiple Objectives</A></DIV>
+<!--End of Navigation Panel-->
+
+</BODY>
+</HTML>

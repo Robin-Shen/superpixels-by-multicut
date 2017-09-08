@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<title>Gurobi Optimization</title>
+	<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+	<style type="text/css">
+	body {
+		background-color: #E7E9EB;
+		padding: 20px 40px;
+		font-family: Helvetica, Arial, sans-serif;
+		font-size:11pt;
+		line-height:20px;
+		margin:0px;
+	}
+	img {
+		border: none;
+	}
+	h2 {
+		margin: 36px 0 8px;
+	}
+	.menu {
+		padding-bottom: 40px;
+	}
+	.menu td {
+		padding-right: 30px;
+		font-size: 14pt;
+		font-weight: bold;
+	}
+	.menu a {
+		text-decoration: none;
+		color: #292929;
+	}
+	.menu a:hover {
+		color: #909090;
+	}
+	.platforms {
+		border-collapse: collapse;
+	}
+	.platforms td, .platforms th {
+		font-size: 10pt;
+		border: solid 1px black;
+		padding: 4px 8px;
+		text-align: left;
+	}
+	</style>
+</head>
+<body>
+<table class='menu'>
+	<tr>
+		<td><a href="http://www.gurobi.com"><img style='width:211px' src="docs/logo.png" alt="Gurobi Optimization" title="Gurobi Optimization" /></a></td>
+		<td><a href="http://www.gurobi.com">gurobi.com</a></td>
+		<td><a href="docs/refman/refman.html">Reference Manual</a></td>
+		<td><a href="mailto:support@gurobi.com">Customer Support</a></td>
+	</tr>
+</table>
+<h1>
+	WELCOME
+</h1>
+<p>
+	You have successfully installed version 7.0 of the Gurobi Optimizer.
+</p>
+<p>
+	You'll find instructions for setting up your Gurobi license in this document, as well as a list of supported platforms, and Release Notes and guidelines for converting existing Gurobi code to run with this new version. Once you have finished browsing this document, you should refer to the <a href="docs/quickstart/quickstart.html">Quick Start Guide</a>, the <a href="docs/examples/examples.html">Example Tour</a>, or the <a href="docs/refman/refman.html">Reference Manual</a> to get started using the Gurobi Optimizer.
+</p>
+<h2>
+	Obtaining Your License
+</h2>
+<p>
+To obtain a Gurobi 7 license, you will need to visit the <a href="http://www.gurobi.com/downloads/licenses/license-center" target="_blank"> Gurobi License Center</a>. If you are a commercial user under maintenance, you should see your Gurobi 7 license under <a href="http://www.gurobi.com/download/licenses/current">Current Gurobi Licenses</a>.  If you would like to request a free academic license, you can do so from the <a href="http://www.gurobi.com/download/licenses/free-academic">Free Academic License</a> page. Once you have a license on the Gurobi web site, you will need to follow the instructions for installing a license in the <a href="docs/quickstart/quickstart.html">Quick Start Guide</a>.
+</p>
+<h2>
+	Supported Platforms for Version 7.0
+</h2>
+<p>
+	The following table lists the supported platforms for version 7.0:
+</p>
+<table class='platforms'>
+	<tr>
+		<th>Platform</th>
+		<th>Operating System</th>
+		<th>Compiler</th>
+		<th>Notes</th>
+	</tr>
+	<tr>
+		<td rowspan="4">Windows&reg; 32-bit (win32)</td>
+		<td>Windows 7, Windows 8.1, Windows 10</td>
+		<td>Visual Studio&reg; 2010</td>
+		<td>Use gurobi_c++md2010.lib (e.g.) for C++</td>
+	</tr>
+	<tr>
+		<td>Windows 7, Windows 8.1, Windows 10</td>
+		<td>Visual Studio 2012</td>
+		<td>Use gurobi_c++md2012.lib (e.g.) for C++</td>
+	</tr>
+	<tr>
+		<td>Windows 7, Windows 8.1, Windows 10</td>
+		<td>Visual Studio 2013</td>
+		<td>Use gurobi_c++md2013.lib (e.g.) for C++</td>
+	</tr>
+	<tr>
+		<td>Windows 7, Windows 8.1, Windows 10</td>
+		<td>Visual Studio 2015</td>
+		<td>Use gurobi_c++md2015.lib (e.g.) for C++</td>
+	</tr>
+	<tr>
+		<td rowspan="4">Windows 64-bit (win64)</td>
+		<td>Windows 7, Windows 8.1, Windows 10, Windows Server 2008 R2, Windows Server 2012 R2</td>
+		<td>Visual Studio 2010</td>
+		<td>Use gurobi_c++md2010.lib (e.g.) for C++</td>
+	</tr>
+	<tr>
+		<td>Windows 7, Windows 8.1, Windows 10, Windows Server 2008 R2, Windows Server 2012 R2</td>
+		<td>Visual Studio 2012</td>
+		<td>Use gurobi_c++md2012.lib (e.g.) for C++</td>
+	</tr>
+	<tr>
+		<td>Windows 7, Windows 8.1, Windows 10, Windows Server 2008 R2, Windows Server 2012 R2</td>
+		<td>Visual Studio 2013</td>
+		<td>Use gurobi_c++md2013.lib (e.g.) for C++</td>
+	</tr>
+	<tr>
+		<td>Windows 7, Windows 8.1, Windows 10, Windows Server 2008 R2, Windows Server 2012 R2</td>
+		<td>Visual Studio 2015</td>
+		<td>Use gurobi_c++md2015.lib (e.g.) for C++</td>
+	</tr>
+	<tr>
+		<td rowspan="3">Linux&reg; 64-bit (linux64)</td>
+		<td>Red Hat&reg; Enterprise Linux 5.9-5.11, 6.6-6.8, 7.0-7.2</td>
+		<td>GCC 4.1/4.4</td>
+		<td>Use libgurobi_g++4.1.a for C++ in RHEL 5</td>
+	</tr>
+	<tr>
+		<td>SUSE&reg; Enterprise Linux 11, 12</td>
+		<td>GCC 4.3/4.4</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>Ubuntu&reg; 12.04, 14.04, 16.04, 16.10</td>
+		<td>GCC 4.2/4.3/4.4/4.6</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>Mac OS 64-bit (mac64)</td>
+		<td>Mac OS X 10.9 (Mavericks), 10.10 (Yosemite), 10.11 (El Capitan), 10.12 (Sierra)</td>
+		<td>Xcode 4/5/6</td>
+		<td>Use libgurobi_stdc++.a for -stdlib=libstdc++ in C++</td>
+	</tr>
+	<tr>
+		<td>AIX&reg; 64-bit (power64)</td>
+		<td>AIX 6.1, 7.1</td>
+		<td>XL C/C++ 9</td>
+		<td>Due to limited Python support on AIX, this port does not include the Interactive Shell or the Python libraries.</td>
+	</tr>
+</table>
+<p>
+	Our MATLAB&reg; interface supports MATLAB versions 2008b through 2016b. Our R interface supports R version 3.3.
+</p>
+<h2>
+	Release Notes for Version 7.0
+</h2>
+<p>
+	In addition to many performance enhancements, Gurobi 7.0 adds several new features:
+</p>
+<ul>
+        <li><b>Python Modeling Enhancements:</b> Our Python modeling interface has been greatly enhanced.  We provide new methods
+               and classes that further simplify the task of translating mathematical models into efficient implementations.
+               For an introduction see the <a href="docs/refman/py_python_api_overview.html">Python API Overview</a> section
+               in the Reference Manual.</li>
+        </li>
+        <li><b>Multiple Objective Support:</b> You can now associate multiple, independent optimization
+               objectives with your model, and then perform either blended or lexicographic optimization
+               on the resulting multi-objective model.
+               For details see the <a href="docs/refman/multiple_objectives.html">multiple objective</a> section
+               in the Reference Manual.</li>
+	<li><b>MIP Solution Pool Support:</b> You can now obtain more than just one optimal
+               solution to your MIP model.  Specifically, you can now request the N best solutions, or N
+               solutions that are less than a specified gap from the optimal solution.
+               For details see the <a href="docs/refman/solution_pool.html">solution pool</a> section
+               in the Reference Manual.</li>
+	<li><b>General constraints:</b> You can now enter several commonly occuring types of constraints
+               without having to translate them into linear constraints yourself.  Specifically, you can
+               now add the following constraint types:
+               <ul>
+               <li><b>MIN/MAX constraint:</b> sets a decision variable equal to the <b>min/max</b> over a set of other decision variables</li>
+               <li><b>ABS constraint:</b> sets a decision variable equal to the <b>absolute value</b> of some other decision variable</li>
+               <li><b>AND/OR constraint:</b> sets a binary decision variable equal to the logical <b>and/or</b> over a set of other binary decision variables</li>
+               <li><b>INDICATOR constraint:</b> forces a linear constraint to be satisfied whenever a binary decision variable takes the specified value</li>
+               </ul>
+               For details see the General Constraints discussion in the
+               <a href="docs/refman/variables_and_constraints.html">variables and constraints</a> section
+               in the Reference Manual.</li>
+        <li><b>No more update calls for most programs:</b> The new release changes the default update behavior.  You can now refer to newly created variables and constraints without having to call <b>update</b> first.  You can set the <a href="docs/refman/updatemode.html"><b>UpdateMode</b></a> parameter to 0 if you want to revert to the previous behavior.</li>
+        <li><b>Tuning tool improvements:</b> The tuning tool has been improved.  It now accepts MIP starts.  Also, in previous releases the tuning tool would always try to find settings that minimized the optimality gap.  You can now use the new <a href="docs/refman/tunecriterion.html"><b>TuneCriterion</b></a> parameter to search for settings that produce the best lower bound, upper bound, or gap.</li>
+	<li><b>Enhanced Gurobi Instant Cloud:</b> You can now launch Instant Cloud instances directly from the Gurobi APIs (or through a license file).</li>
+	<li><b>Enhanced .NET property support:</b> Parameters and attributes are now available through .NET properties in the .NET interface.</li>
+	<li><b>Simplified parameter setting:</b> You now set parameters on the model object itself in the object-oriented interfaces, which removes a frequent source of confusion.</li>
+	<li><b>Support for Python 3.5 on Mac:</b> We've added support for Python 3.5 (including Anaconda 3.5) on Mac.</li>
+	<li><b>Additional new parameters:</b>
+	<ul>
+		<li><a href="docs/refman/bestobjstop.html"><b>BestObjStop:</b></a> New termination criterion - terminates a MIP solve when the incumbent objective is at least as good as the specified value.</li>
+		<li><a href="docs/refman/bestbdstop.html"><b>BestBdStop:</b></a> New termination criterion - terminates a MIP solve when the best bound is at least as good as the specified value.</li>
+		<li><a href="docs/refman/infproofcuts.html"><b>InfProofCuts:</b></a> New cutting plane type.</li>
+		<li><a href="docs/refman/strongcgcuts.html"><b>StrongCGCuts:</b></a> New cutting plane type.</li>
+		<li><a href="docs/refman/degenmoves.html"><b>DegenMoves:</b></a> Allows the user to shut off a root heuristic that can sometimes be expensive.</li>
+	</ul>
+        </li>
+</ul>
+<h2>
+	Code Conversion from Version 6.5
+</h2>
+<p>
+Programs that were originally written for version 6.5 of the Gurobi Optimizer generally won't require any code changes to use version 7.0.  If you'd like to use the new features, some code changes are required.
+</p>
+<h2>
+	Acknowledgements
+</h2>
+We would like to thank Michael Grant and Michael Helmling for their help with our Python interface.  Python expression building is now dramatically faster thanks to their input.
+<h2>
+	License Agreement
+</h2>
+<p>
+	Note that this software is covered by the <a href="EULA.pdf">Gurobi End User License Agreement</a>. By completing the Gurobi installation process and using the software, you are accepting the terms of this agreement.
+</p>
+<p>
+	Thank you for using Gurobi products!
+</p>
+<hr />
+<p>
+	&copy; 2016 Gurobi Optimization. All Rights Reserved.
+</p>
+</body>
+</html>

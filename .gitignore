@@ -1,0 +1,9 @@
+#ignore
+*.o
+*.gch
+*.jpg
+*.jpeg
+*.png
+.*
+
+/bin/*

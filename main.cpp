@@ -23,13 +23,39 @@
 namespace po = boost::program_options;
 namespace b = boost;
 
+	
+
+string type2str(int type) {
+  string r;
+
+  uchar depth = type & CV_MAT_DEPTH_MASK;
+  uchar chans = 1 + (type >> CV_CN_SHIFT);
+
+  switch ( depth ) {
+    case CV_8U:  r = "8U"; break;
+    case CV_8S:  r = "8S"; break;
+    case CV_16U: r = "16U"; break;
+    case CV_16S: r = "16S"; break;
+    case CV_32S: r = "32S"; break;
+    case CV_32F: r = "32F"; break;
+    case CV_64F: r = "64F"; break;
+    default:     r = "User"; break;
+  }
+
+  r += "C";
+  r += (chans+'0');
+
+  return r;
+}
+
 cv::Mat src, src_gray;
 cv::Mat dst;
+cv::Mat detected_edges;
 cv::Size picture_size;
 
-int edgeThresh = 1;
-int lowThreshold;
-int const max_lowThreshold = 100;
+//int edgeThresh = 1;
+int lowThresh;
+int const max_lowThresh = 100;
 int ratio = 3; // 1:2 or 1:3
 int kernel_size = 3;
 const char* window_name = "Edge Map";
@@ -49,13 +75,11 @@ void my_handler(int s) {
 
 void CannyThreshold(int, void*)
 {
-    cv::Mat detected_edges;
     /// Reduce noise with a kernel 3x3
-    //cv::blur( src_gray, detected_edges, cv::Size(3,3) );
-    cv::GaussianBlur( src_gray, detected_edges, cv::Size(3,3), 9.5);
+    cv::blur( src_gray, detected_edges, cv::Size(3,3) );
 
     /// Canny detector
-    cv::Canny( detected_edges, detected_edges, 0, lowThreshold*ratio, kernel_size );
+    cv::Canny( detected_edges, detected_edges, lowThresh, lowThresh*ratio, kernel_size );
 
     /// Using Canny's output as a mask, we display our result
     dst = cv::Scalar::all(0); // set all pixels of dst to greyscale color 0
@@ -78,7 +102,7 @@ int main(int argc, char** argv) {
         po::options_description desc("Allowed options");
         desc.add_options()
             ("help,h", "produce help message")
-            ("grid-size,gs", po::value<int>()->default_value(64), "set number of grid elements. Only approximate")
+            ("grid-size,gs", po::value<int>()->default_value(1024), "set number of grid elements. Only approximate")
             ("input-file", po::value< std::string >(), "picture to process")
         ;
 
@@ -95,8 +119,6 @@ int main(int argc, char** argv) {
             std::cerr << "no input file given" << std::endl;
             return EXIT_FAILURE;
         }
-        if(vm.count("grid-size"))
-            std::cout << vm["grid-size"].as<int>() << std::endl;
     }
     catch (po::error &ex) {
         std::cerr << ex.what() << std::endl;
@@ -121,7 +143,7 @@ int main(int argc, char** argv) {
     cv::namedWindow( window_name, CV_WINDOW_AUTOSIZE );
 
     /// Create a Trackbar for user to enter threshold
-    cv::createTrackbar( "Low Threshold:", window_name, &lowThreshold, max_lowThreshold, CannyThreshold );
+    cv::createTrackbar( "Threshold:", window_name, &lowThresh, max_lowThresh, CannyThreshold );
 
     /// Show the image
     CannyThreshold(0, 0);
@@ -141,6 +163,7 @@ int main(int argc, char** argv) {
     
     DPRINT(segment_dim.width)
     DPRINT(segment_dim.height)
+    DPRINT(number_of_segments)
     //segments should like this:
     //D-A A A A A-C C C C
     //| | | | | | | | | |
@@ -154,7 +177,6 @@ int main(int argc, char** argv) {
     cv::Size2f segment_size_approx(picture_size.width / (float)segment_dim.width, picture_size.height / (float)segment_dim.height);
     DPRINT(segment_size_approx.width) 
     DPRINT(segment_size_approx.height) 
-    DPRINT(number_of_segments)
 
     
     double lambda = 0.09;
@@ -224,16 +246,37 @@ int main(int argc, char** argv) {
                         g[e].var = model.addVar(0.0, 1.0, 0.0, GRB_BINARY, "edge");
                         //obj2 += lambda_col[x]*g[e].var;
                         obj2 += g[e].var;
-                        obj1 += fabs(submatrix.at<uchar>(y,x)/255.f-submatrix.at<uchar>(y+1,x)/255.f)*g[e].var;
+                        obj1 += sqrt(sqrt(fabs(submatrix.at<uchar>(y,x)/255.f-submatrix.at<uchar>(y+1,x)/255.f)))*g[e].var;
                     }
                 }
             }
+            //obj2 *= lambda;
+            objective = obj2 - obj1;
+            model.setObjective(objective, GRB_MINIMIZE);
 
-            obj2 *= lambda;
-            objective = obj1 - obj2;
-            model.setObjective(objective, GRB_MAXIMIZE);
-
-            //initial constraints
+            //canny edge constraints
+            {
+            //std::cout << type2str( detected_edges.type() ) << std::endl;
+            cv::Mat submatrix = detected_edges(g[b::graph_bundle].row, g[b::graph_bundle].col);
+            for(int y = 0; y < segment_size.height-1; ++y) {
+                for(int x = 0; x < segment_size.width-1; ++x) {
+                    //DPRINT((int)submatrix.at<uchar>(y,x))
+                    if((int)submatrix.at<uchar>(y,x) == 255) {
+                        //std::cout << "hi" << std::endl;
+                        int a = xy_to_index(x, y, segment_size);
+                        int b = xy_to_index(x+1, y, segment_size);
+                        Graph::edge_descriptor e_horizontal, e_vertical;
+                        bool exists;
+                        b::tie(e_horizontal, exists) = b::edge(a, b, g);
+                        a = xy_to_index(x, y, segment_size);
+                        b = xy_to_index(x, y+1, segment_size);
+                        b::tie(e_vertical, exists) = b::edge(a, b, g);
+                        model.addConstr(g[e_horizontal].var + g[e_vertical].var >= 1);
+                    }
+                }
+            }
+            }
+            //initial multicut constraints
             for(int x = 0; x < segment_size.width-1; ++x) {
                 for(int y = 0; y < segment_size.height-1; ++y) {
                     //a---b
